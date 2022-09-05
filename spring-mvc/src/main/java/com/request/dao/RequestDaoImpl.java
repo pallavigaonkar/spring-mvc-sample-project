@@ -1,5 +1,9 @@
 package com.request.dao;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -50,7 +54,7 @@ public class RequestDaoImpl implements RequestDao {
 				throw new DaoException(true, "Customer id cannot be null or blank");
 			}
 
-			String chkRequestQuery = this.getSystemQuery("checkCustomer");
+			String chkRequestQuery = this.getSystemQuery("checkCustomerRequest");
 
 			int cnt = (int) this.jdbcTemplate.queryForObject(chkRequestQuery, new Object[] { customerId },
 					Integer.class);
@@ -92,7 +96,6 @@ public class RequestDaoImpl implements RequestDao {
 		} catch (DaoException ex) {
 			throw ex;
 		} catch (Exception ex) {
-			ex.printStackTrace();
 			MessageLogger.error(logger, "Could not fetch request details" + ex);
 			throw new DaoException(true, "Could not fetch request details");
 		}
@@ -105,5 +108,67 @@ public class RequestDaoImpl implements RequestDao {
 		}
 
 		return query;
+	}
+
+	@Override
+	public Map<String, String> saveRequest(Request request) throws DaoException {
+		MessageLogger.debug(logger, String.format("saveRequest()"));
+		Map<String, String> mapId = new HashMap<String, String>();
+		try {
+			String chkCustomerQuery = this.sqlProperties.getProperty("checkCustomerRequest");
+
+			int cnt = this.jdbcTemplate.queryForObject(chkCustomerQuery, new Object[] { request.getCustomerId() },
+					Integer.class);
+			if (cnt == 0) {
+				final String query = this.getSystemQuery("saveRequest");
+				Connection connection = this.jdbcTemplate.getDataSource().getConnection();
+
+				PreparedStatement preparedStatement = connection.prepareStatement(query,
+						Statement.RETURN_GENERATED_KEYS);
+				preparedStatement.setString(1, request.getBankName());
+				preparedStatement.setString(2, request.getBranchName());
+				preparedStatement.setString(3, request.getMicrCode());
+				preparedStatement.setString(4, request.getIfscCode());
+				preparedStatement.setString(5, request.getAccountNo());
+				preparedStatement.setString(6, request.getCustomerId());
+				preparedStatement.setString(7, request.getTitle());
+				preparedStatement.setString(8, request.getName());
+				preparedStatement.setString(9, request.getGender());
+				preparedStatement.setString(10, request.getDob());
+				preparedStatement.setString(11, request.getAddress());
+				preparedStatement.setString(12, request.getMobileNo());
+				preparedStatement.setString(13, request.getEmailId());
+				preparedStatement.setString(14, request.getNomineeName());
+				preparedStatement.setString(15, request.getNomineeAadharNo());
+				preparedStatement.setString(16, request.getNomineeRelationship());
+				preparedStatement.setString(17, request.getIsNomineeMinor());
+				preparedStatement.setString(18, request.getGaurdianName());
+				preparedStatement.setString(19, request.getContributionPeriod());
+				preparedStatement.setString(20, request.getPensionAmt());
+				preparedStatement.setString(21, request.getMonthlyContribution());
+				preparedStatement.setString(22, request.getPanNumber());
+				if (preparedStatement.executeUpdate() > 0) {
+					ResultSet rset = preparedStatement.getGeneratedKeys();
+
+					if (!rset.next()) {
+						throw new DaoException("No id was returned for this new record!");
+					}
+					request.setId(rset.getInt(1));
+				} else {
+					throw new DaoException("No entry was made for this new record!");
+				}
+				MessageLogger.info(logger, request.getId() + " requestId...........");
+
+				mapId.put(Constant.REQUEST_ID, Integer.toString(request.getId()));
+			} else {
+				throw new DaoException("Request is already registered for this customer");
+			}
+		} catch (DaoException ex) {
+			throw ex;
+		} catch (Exception ex) {
+			MessageLogger.error(logger, "Could not save request details" + ex);
+			throw new DaoException(true, "Could not save request details");
+		}
+		return mapId;
 	}
 }

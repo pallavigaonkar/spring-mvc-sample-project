@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.request.dao.RequestDao;
+import com.request.model.Request;
 import com.request.dao.DaoException;
 import com.util.MessageLogger;
 
@@ -28,6 +29,17 @@ public class RequestServiceImpl implements IRequestService {
 			throw new ServiceException(true, ex.getLocalizedMessage());
 		}
 
+	}
+
+	@Override
+	public Map<String, String> saveRequest(Request request) throws ServiceException {
+		MessageLogger.debug(logger, String.format("saveRequest()"));
+		try {
+			return custDao.saveRequest(request);
+		} catch (DaoException ex) {
+			MessageLogger.error(logger, "Error while retrieving saving request data", ex);
+			throw new ServiceException(true, ex.getLocalizedMessage());
+		}
 	}
 
 }

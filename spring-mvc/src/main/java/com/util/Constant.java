@@ -10,5 +10,6 @@ public class Constant {
 	public static final String NAME = "name";
 	public static final String NOMINEE_RELATIONSHIP = "nomineeRelationship";
 	public static final String ACCOUNTS = "accounts";
+	public static final String REQUEST_ID = "requestId";
 
 }
