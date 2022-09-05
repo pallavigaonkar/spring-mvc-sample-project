@@ -1,5 +1,6 @@
 package com.request.service;
 
+import java.util.List;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -17,13 +18,13 @@ public class RequestServiceImpl implements IRequestService {
 	private static final Logger logger = LoggerFactory.getLogger(RequestServiceImpl.class);
 
 	@Autowired
-	RequestDao custDao;
+	RequestDao reqDao;
 
 	@Override
 	public Map<String, Object> getRequestDataByCustomerId(String customerId) throws ServiceException {
 		MessageLogger.debug(logger, String.format("getRequestDataByCustomerId(customerId = %s)", customerId));
 		try {
-			return custDao.getRequestDataByCustomerId(customerId);
+			return reqDao.getRequestDataByCustomerId(customerId);
 		} catch (DaoException ex) {
 			MessageLogger.error(logger, "Error while retrieving request data", ex);
 			throw new ServiceException(true, ex.getLocalizedMessage());
@@ -35,9 +36,20 @@ public class RequestServiceImpl implements IRequestService {
 	public Map<String, String> saveRequest(Request request) throws ServiceException {
 		MessageLogger.debug(logger, String.format("saveRequest()"));
 		try {
-			return custDao.saveRequest(request);
+			return reqDao.saveRequest(request);
 		} catch (DaoException ex) {
 			MessageLogger.error(logger, "Error while retrieving saving request data", ex);
+			throw new ServiceException(true, ex.getLocalizedMessage());
+		}
+	}
+
+	@Override
+	public List<Request> getAllCustomerRequests() throws ServiceException {
+		MessageLogger.debug(logger, String.format("getAllCustomerRequests()"));
+		try {
+			return reqDao.getAllCustomerRequests();
+		} catch (DaoException ex) {
+			MessageLogger.error(logger, "Error while retrieving requests", ex);
 			throw new ServiceException(true, ex.getLocalizedMessage());
 		}
 	}

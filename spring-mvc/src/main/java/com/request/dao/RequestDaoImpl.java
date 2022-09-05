@@ -171,4 +171,16 @@ public class RequestDaoImpl implements RequestDao {
 		}
 		return mapId;
 	}
+
+	@Override
+	public List<Request> getAllCustomerRequests() throws DaoException {
+		MessageLogger.debug(logger, String.format("getAllCustomerRequests()"));
+		try {
+			String requestQuery = this.getSystemQuery("getRequests");
+			return jdbcTemplate.query(requestQuery, new BeanPropertyRowMapper<>(Request.class));
+		} catch (Exception ex) {
+			MessageLogger.error(logger, "Could not fetch requests" + ex);
+			throw new DaoException(true, "Could not fetch requests");
+		}
+	}
 }

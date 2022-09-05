@@ -51,4 +51,17 @@ public class RequestController {
 					ex.getLocalizedMessage());
 		}
 	}
+	
+	@RequestMapping(value = "/all", params="action=read", method = RequestMethod.GET)
+	public @ResponseBody ResponsePayload getAllCustomerRequests() {
+		MessageLogger.debug(logger, String.format("getAllCustomerRequests()"));
+		try {
+			return new ResponsePayload("Requests retrieved successfully ",
+					reqServiceImpl.getAllCustomerRequests());
+		} catch (ServiceException ex) {
+			MessageLogger.error(logger, "Error while fetching requests ", ex);
+			return new ResponsePayload(PayloadStatusEnum.FAIL.getValue(), ex.getLocalizedMessage(),
+					ex.getLocalizedMessage());
+		}
+	}
 }
