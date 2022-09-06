@@ -55,8 +55,8 @@ public class Request {
 	@NotBlank(message = "Date Of Birth cannot be blank.")
 	private String dob;
 
-	@NotNull(message = "Address 1 cannot be empty.")
-	@NotBlank(message = "Address 1 cannot be blank.")
+	@NotNull(message = "Address cannot be empty.")
+	@NotBlank(message = "Address cannot be blank.")
 	private String address;
 
 	private String mobileNo;
@@ -106,6 +106,43 @@ public class Request {
 
 	@Pattern(regexp = "^[A-Z]{5}[0-9]{4}[A-Z]{1}+|(\\s{0})$", message = "Invalid Pan Number.")
 	private String panNumber;
+
+	public Request() {
+		super();
+	}
+
+	public Request(int id, String bankName, String branchName, String micrCode, String ifscCode, String accountNo,
+			String customerId, String title, String name, String gender, String dob, String address, String mobileNo,
+			String emailId, String aadharNo, String nomineeName, String nomineeAadharNo, String nomineeRelationship,
+			String isNomineeMinor, String gaurdianName, String pensionAmt, String monthlyContribution, String age,
+			String contributionPeriod, String panNumber) {
+		super();
+		this.id = id;
+		this.bankName = bankName;
+		this.branchName = branchName;
+		this.micrCode = micrCode;
+		this.ifscCode = ifscCode;
+		this.accountNo = accountNo;
+		this.customerId = customerId;
+		this.title = title;
+		this.name = name;
+		this.gender = gender;
+		this.dob = dob;
+		this.address = address;
+		this.mobileNo = mobileNo;
+		this.emailId = emailId;
+		this.aadharNo = aadharNo;
+		this.nomineeName = nomineeName;
+		this.nomineeAadharNo = nomineeAadharNo;
+		this.nomineeRelationship = nomineeRelationship;
+		this.isNomineeMinor = isNomineeMinor;
+		this.gaurdianName = gaurdianName;
+		this.pensionAmt = pensionAmt;
+		this.monthlyContribution = monthlyContribution;
+		this.age = age;
+		this.contributionPeriod = contributionPeriod;
+		this.panNumber = panNumber;
+	}
 
 	public int getId() {
 		return id;
